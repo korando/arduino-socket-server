@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+
+	
+	
+
+	<!--<button type="button" id="cmdReg">Reg</button>-->
+	<div>
+	<span>Room:</span>
+	<input type="text" id="tbxRoom" value="g000052"/>
+	</div>
+	<button type="button" id="cmdJoin">Join</button>
+
+	<div>
+	<span>interval:</span>
+	<input type="text" id="tbxInterval" value="5" />
+	</div>
+	<button type="button" id="cmdSend">Start record</button>
+
+
+
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//socketmessage-h2ovn.rhcloud.com//socket.io/socket.io.js"></script>
+	<script>
+		$.material.init()
+
+		var socket = io('http://socketmessage-h2ovn.rhcloud.com/');
+		socket.on('onRegister', function (data) {
+			console.log("onRegister", data);
+			showLog("onRegister",data)
+		});
+		socket.on('onJoin', function (data) {
+			console.log("onJoin", data);
+			showLog("onJoin",data)
+		});
+		socket.on('onJoinOther', function (data) {
+			console.log("onJoinOther", data);
+			showLog("onJoinOther",data)
+		});
+		socket.on('onMessage', function (data) {
+			console.log("onMessage", data);
+			showLog("onMessage",data)
+		});
+
+		function showLog(method, data){
+			var object= $('<div class="alert alert-dismissible alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>'+method+'</strong>'+ data +'</div>');
+			$('#logHere').append(object);
+			console.log("showlog",data);
+		};
+
+		$(function () {
+			$('#cmdReg').click(function () {
+				socket.emit('register');
+			})
+			$('#cmdJoin').click(function () {
+				var groupName = $('#tbxRoom').val();
+				socket.emit('join', groupName);
+				console.log("Dô rồi nha má");
+				$('#tbxRoom').val("");
+			})
+			$('#cmdSend').click(function () {
+				//example send message: (‘duration', ‘5')
+				var o = { duration : 5};
+				// dùng để gửi message lẫn nhau, msg kiểu string json
+				console.log(o);
+				socket.emit('message', o);
+			})
+
+
+
+
+
+		})
+	</script>
+</body>
+</html>

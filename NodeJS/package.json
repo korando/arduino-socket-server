@@ -1,0 +1,13 @@
+{
+  "name": "socket-message",
+  "version": "0.0.1",
+  "description": "Socket to send message",
+  "dependencies": {
+    "socket.io": "^1.3.7"
+  },
+  "author": "h2o",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "main": "main.js"
+}
