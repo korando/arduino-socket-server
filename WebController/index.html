@@ -286,36 +286,40 @@
           <div class="form-horizontal">
             <fieldset>
               <legend>Socket</legend>
+              
+
+              <!--socket room-->
               <div class="form-group">
                 <label for="inputEmail" class="col-md-4 control-label">Socket Number</label>
-
                 <div class="col-md-8">
-                  <input type="email" class="form-control" id="tbxRoom" placeholder="Socket Code">
+                  <input type="text" class="form-control" id="tbxRoom" placeholder="Socket Code" value="room1">
                 </div>
               </div>
-
               <div class="form-group">
                 <div class="col-md-10 col-md-offset-4">
-                  <button type="button" class="btn btn-raised btn-danger col-md-4">Disconnect</button>
                   <button type="submit" class="btn btn-raised btn-success col-md-4" id="cmdJoin" >Connect</button>
                 </div>
               </div>
 
-               <div class="form-group">
-                <label for="inputEmail" class="col-md-4 control-label">Timer</label>
 
-                <div class="col-md-8">
-                  <input type="email" class="form-control" id="inputEmail" placeholder="Seconds">
-                </div>
-              </div>
 
-             <div class="form-group">
+              <!--controller-->
+              <div class="form-group">
                 <div class="col-md-10 col-md-offset-4">
-                  <button type="button" class="btn btn-raised btn-danger col-md-4">Stop</button>
-                  <button type="submit" class="btn btn-raised btn-success col-md-4" id="cmdSend">Record</button>
+                  <button type="button" id="btnUp" class="btn btn-raised btn-danger col-md-4">UP</button>
+                </div>
+
+                <div class="col-md-10 col-md-offset-2">
+                  <button type="button" id="btnLeft" class="btn btn-raised btn-danger col-md-4">LEFT</button>
+                  <button type="button" id="btnRight" class="btn btn-raised btn-danger col-md-4">RIGHT</button>
+                </div>
+                <div class="col-md-10 col-md-offset-4">
+                  
+                </div>
+                <div class="col-md-10 col-md-offset-4">
+                  <button type="button" id="btnDown" class="btn btn-raised btn-danger col-md-4">DOWN</button>
                 </div>
               </div>
-
 
             </fieldset>
           </div>
@@ -404,11 +408,11 @@
 ================================================== -->
 
 
-<script src="http://192.168.19.24:3030/socket.io/socket.io.js"></script>
+<script src="http://192.168.19.222:3030/socket.io/socket.io.js"></script>
 <script>
     $.material.init()
 
-    var socket = io('http://192.168.19.24:3030');
+    var socket = io('http://192.168.19.222:3030');
     socket.on('onRegister', function (data) {
       console.log("onRegister", data);
       showLog("onRegister",data);
@@ -439,21 +443,43 @@
     };
 
     $(function () {
-      $('#cmdReg').click(function () {
-        socket.emit('register');
-      })
+      
       $('#cmdJoin').click(function () {
         var groupName = $('#tbxRoom').val();
         socket.emit('join', groupName);
         showLog("onJoin",groupName)
       })
-      $('#cmdSend').click(function () {
-        var o = { duration : 5};
-        // dùng để gửi message lẫn nhau, msg kiểu string json
+      
+      $('#btnUp').click(function () {
+        var o = "UP";
         socket.emit('message', o);
-        showLog("onMessage", JSON.stringify(o))
+        showLog("onMessage", o)
         console.log(o);
       })
+
+      $('#btnDown').click(function () {
+        var o = "DOWN";
+        socket.emit('message', o);
+        showLog("onMessage", o)
+        console.log(o);
+      })
+
+      $('#btnLeft').click(function () {
+        var o = "LEFT";
+        socket.emit('message', o);
+        showLog("onMessage", o)
+        console.log(o);
+      })
+
+      $('#btnRight').click(function () {
+        var o = "RIGHT";
+        socket.emit('message', o);
+        showLog("onMessage", o)
+        console.log(o);
+      })
+
+
+
     })
   </script>
 

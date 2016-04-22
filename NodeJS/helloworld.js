@@ -5,6 +5,6 @@ board.on("ready", function() {
   // Create an Led on pin 13
   var led = new five.Led(13);
   // Blink every half second
-  led.blink(500); 
+  led.blink(2000); 
 });
 
