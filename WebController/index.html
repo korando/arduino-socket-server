@@ -305,19 +305,17 @@
 
               <!--controller-->
               <div class="form-group">
-                <div class="col-md-10 col-md-offset-4">
-                  <button type="button" id="btnUp" class="btn btn-raised btn-danger col-md-4">UP</button>
+                <div class="col-md-12 col-md-offset-3">
+                  <button type="button" id="btnUp" class="btn btn-raised btn-danger col-md-3">UP</button>
                 </div>
 
-                <div class="col-md-10 col-md-offset-2">
-                  <button type="button" id="btnLeft" class="btn btn-raised btn-danger col-md-4">LEFT</button>
-                  <button type="button" id="btnRight" class="btn btn-raised btn-danger col-md-4">RIGHT</button>
+                <div class="col-md-12">
+                  <button type="button" id="btnLeft" class="btn btn-raised btn-danger col-md-3">LEFT</button>
+                  <button type="button" id="btnStop" class="btn btn-raised btn-danger col-md-3">STOP</button>
+                  <button type="button" id="btnRight" class="btn btn-raised btn-danger col-md-3">RIGHT</button>
                 </div>
-                <div class="col-md-10 col-md-offset-4">
-                  
-                </div>
-                <div class="col-md-10 col-md-offset-4">
-                  <button type="button" id="btnDown" class="btn btn-raised btn-danger col-md-4">DOWN</button>
+                <div class="col-md-12 col-md-offset-3">
+                  <button type="button" id="btnDown" class="btn btn-raised btn-danger col-md-3">DOWN</button>
                 </div>
               </div>
 
@@ -473,6 +471,13 @@
 
       $('#btnRight').click(function () {
         var o = "RIGHT";
+        socket.emit('message', o);
+        showLog("onMessage", o)
+        console.log(o);
+      })
+
+      $('#btnStop').click(function () {
+        var o = "STOP";
         socket.emit('message', o);
         showLog("onMessage", o)
         console.log(o);

@@ -32,32 +32,6 @@ myBoard.on("ready", function() {
 });
 */
 
-var five = require("johnny-five");
-var board = new five.Board();
-
-var myPinUp;
-var myPinUpState;
-
-var myPinDown;
-var myPinDownState;
-
-
-board.on("ready", function() {
-    myPinUpState = 0x00;
-    myPinDownState = 0x00;
-
-    myPinUp = new five.Pin(13);
-    myPinDown = new five.Pin(12);
-
-    this.repl.inject({
-        pin: myPinUp,
-        pin: myPinDown
-    });
-});
-
-
-
-
 
 //port thằng user truy cập vào
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 3030
@@ -104,9 +78,87 @@ function handler(req, res) {
     res.end("hello");
 }
 
+
+//Arduino Board init
+var five = require("johnny-five");
+var board = new five.Board();
+var myPinUp;
+var myPinUpState;
+var myPinDown;
+var myPinDownState;
+var myPinLeft;
+var myPinLetState;
+var myPinRight;
+var myPinRightState;
+
+board.on("ready", function() {
+    //Set default state for 4 pins
+    myPinUpState = 0x00;
+    myPinDownState = 0x00;
+    myPinLeftState = 0x00;
+    myPinRightState = 0x00;
+
+    //Init pins
+    myPinUp = new five.Pin(13);
+    myPinDown = new five.Pin(12);
+    myPinLeft = new five.Pin(8);
+    myPinRight = new five.Pin(7);
+
+    this.repl.inject({
+        pin: myPinUp,
+        pin: myPinDown,
+        pin: myPinLeft,
+        pin: myPinRight
+    });
+});
+
+
 io.on('connection', function(socket) {
     //clients.push(socket);
-    console.log("connection ");
+    console.log("connected ... ");
+
+
+    socket.on('message', function(data) {
+
+        var s = groups[socket.data_groupName];
+        console.log(socket.data_groupName);
+
+        //Ardiono controller here
+        if (socket.data_groupName != null && s != null) {
+
+            //Send signal based on web message
+            if (data == "UP") {
+                console.log(data);
+                myPinUp.write(myPinUpState = 0x01);
+                myPinDown.write(myPinDownState = 0x00);
+            } else if (data == "DOWN") {
+                console.log(data);
+                myPinUp.write(myPinUpState = 0x00);
+                myPinDown.write(myPinDownState = 0x01);
+            } else if (data == "LEFT") {
+                console.log(data);
+                myPinLeft.write(myPinLeftState = 0x01);
+                myPinRight.write(myPinRightState = 0x00);
+            } else if (data == "RIGHT") {
+                console.log(data);
+                myPinLeft.write(myPinLeftState = 0x00);
+                myPinRight.write(myPinRightState = 0x01);
+            } else if (data == "STOP") {
+                console.log(data);
+                myPinUp.write(myPinUpState = 0x00);
+                myPinDown.write(myPinDownState = 0x00);
+                myPinLeft.write(myPinLeftState = 0x00);
+                myPinRight.write(myPinRightState = 0x00);
+            }
+
+        } else {
+            socket.emit('onError', {
+                error: "group not found",
+                errorCode: 1
+            });
+        }
+    });
+
 
 
     socket.on('register', function() {
@@ -149,30 +201,6 @@ io.on('connection', function(socket) {
         }
         socket.data_groupName = groupName;
     });
-
-
-    socket.on('message', function(data) {
-       
-        var s = groups[socket.data_groupName];
-        console.log(socket.data_groupName);
-
-        //Ardiono controller here
-        if (socket.data_groupName != null && s != null) {
-            if (data == "UP") {
-                myPinUp.write(myPinUpState ^= 0x01);
-                myPinDown.write(myPinDownState ^= 0x00);
-            } else if (data != "DOWN") {
-                myPinUp.write(myPinUpState ^= 0x00);
-                myPinDown.write(myPinDownState ^= 0x01);
-            }
-        } else {
-            socket.emit('onError', {
-                error: "group not found",
-                errorCode: 1
-            });
-        }
-    });
-
 
     socket.on('disconnect', function() {
         console.log("disconnect ", socket.data_groupName);
